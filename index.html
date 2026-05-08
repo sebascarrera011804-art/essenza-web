@@ -14,7 +14,7 @@
   <!-- SKIP LINK (accesibilidad) -->
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
-  <!-- ── NAVBAR ───────────────────────────────────────────────── -->
+  <!-- ── NAVBAR ──────────────────────────────── -->
   <header role="banner">
     <nav class="navbar" aria-label="Navegación principal">
       <a href="#" class="nav-brand" aria-label="Essenza - Inicio" onclick="showPage('home'); return false;">ESSENZA</a>
@@ -22,13 +22,14 @@
         <li><a href="#" onclick="showPage('catalogo'); return false;">Catálogo</a></li>
         <li><a href="#" onclick="showPage('guia'); return false;">Guía Olfativa</a></li>
         <li><a href="#" onclick="showPage('perfil'); return false;">Mi Perfil</a></li>
+        <li><a href="#" onclick="showPage('contacto'); return false;">Contacto</a></li>
       </ul>
       <div class="nav-actions">
         <button class="btn-icon" onclick="showPage('catalogo')" aria-label="Buscar perfumes">
           🔍 <span>Buscar</span>
         </button>
-        <button class="btn-icon" aria-label="Carrito de compras, 2 productos">
-          🛍️ <span class="cart-badge" aria-label="2 productos">2</span>
+        <button class="btn-icon" aria-label="Carrito de compras">
+          🛍️ <span class="cart-badge" aria-label="0 productos">0</span>
         </button>
       </div>
     </nav>
@@ -40,12 +41,12 @@
     <span id="toast-msg">Producto agregado al carrito</span>
   </div>
 
-  <!-- ══════════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
        CONTENIDO PRINCIPAL
-  ═══════════════════════════════════════════════ -->
+  ═════════════════════════════════════════════ -->
   <main id="main-content">
 
-    <!-- ── PÁGINA: HOME ──────────────────────────── -->
+    <!-- ── PÁGINA: HOME ──────────────────────── -->
     <div class="page active" id="page-home" role="main">
 
       <section class="hero" aria-labelledby="hero-title">
@@ -84,66 +85,64 @@
 
     </div><!-- /page-home -->
 
-    <!-- ── PÁGINA: CATÁLOGO ──────────────────────── -->
+    <!-- ── PÁGINA: CATÁLOGO ──────────────────── -->
     <div class="page" id="page-catalogo" role="main">
-      <div class="wireframe-note">⬜ PROTOTIPO DE BAJA FIDELIDAD — Catálogo con filtros</div>
       <div class="main-layout">
 
         <!-- Sidebar de filtros -->
         <aside class="sidebar" aria-label="Filtros de búsqueda">
           <p class="sidebar-title">Filtrar</p>
 
+          <!-- Buscador -->
+          <div class="filter-group">
+            <p class="filter-label">Buscar</p>
+            <input
+              type="search"
+              id="search-input"
+              class="search-input"
+              placeholder="Nombre, marca, nota..."
+              aria-label="Buscar perfumes">
+          </div>
+
           <div class="filter-group">
             <p class="filter-label" id="filter-familia">Familia Olfativa</p>
-            <div class="filter-chips" role="group" aria-labelledby="filter-familia">
-              <button class="chip active" onclick="toggleChip(this)" aria-pressed="true">Floral</button>
+            <div class="filter-chips" id="filter-familia-group" role="group" aria-labelledby="filter-familia">
+              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Floral</button>
               <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Amaderado</button>
               <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Cítrico</button>
               <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Oriental</button>
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Fresco</button>
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Especiado</button>
+              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Acuático</button>
             </div>
           </div>
 
           <div class="filter-group">
             <p class="filter-label" id="filter-intensidad">Intensidad</p>
-            <div class="filter-chips" role="group" aria-labelledby="filter-intensidad">
+            <div class="filter-chips" id="filter-intensidad-group" role="group" aria-labelledby="filter-intensidad">
               <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Ligero</button>
-              <button class="chip active" onclick="toggleChip(this)" aria-pressed="true">Moderado</button>
+              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Moderado</button>
               <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Intenso</button>
             </div>
           </div>
 
           <div class="filter-group">
-            <p class="filter-label" id="filter-duracion">Duración</p>
-            <div class="filter-chips" role="group" aria-labelledby="filter-duracion">
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">2-4 h</button>
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">4-6 h</button>
-              <button class="chip active" onclick="toggleChip(this)" aria-pressed="true">6-8 h</button>
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">+8 h</button>
+            <p class="filter-label" id="filter-tipo">Tipo</p>
+            <div class="filter-chips" id="filter-tipo-group" role="group" aria-labelledby="filter-tipo">
+              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">EdP</button>
+              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">EdT</button>
+              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">EdC</button>
             </div>
           </div>
 
           <div class="filter-group">
             <p class="filter-label" id="filter-precio">Precio máximo</p>
             <div class="range-row" role="group" aria-labelledby="filter-precio">
-              <input type="range" class="range-input" min="20" max="300" value="150"
-                id="price-range" aria-label="Precio máximo"
-                oninput="document.getElementById('price-val').textContent = '$' + this.value">
-              <span class="range-val" id="price-val" aria-live="polite">$150</span>
+              <input type="range" class="range-input" min="20" max="300" value="300"
+                id="price-range" aria-label="Precio máximo">
+              <span class="range-val" id="price-val" aria-live="polite">$300</span>
             </div>
           </div>
 
-          <div class="filter-group">
-            <p class="filter-label" id="filter-tipo">Tipo</p>
-            <div class="filter-chips" role="group" aria-labelledby="filter-tipo">
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">EdP</button>
-              <button class="chip active" onclick="toggleChip(this)" aria-pressed="true">EdT</button>
-              <button class="chip" onclick="toggleChip(this)" aria-pressed="false">Parfum</button>
-            </div>
-          </div>
-
-          <button class="btn-primary btn-full" onclick="showToast('Filtros aplicados — 12 resultados encontrados')">
+          <button class="btn-primary btn-full" onclick="applyFilters()">
             Aplicar filtros
           </button>
           <button class="btn-outline btn-full btn-sm" onclick="resetFilters()">
@@ -155,13 +154,11 @@
         <section aria-label="Resultados del catálogo">
           <div class="products-area">
             <div class="products-header">
-              <p class="products-count">Mostrando <strong>12</strong> de 48 productos</p>
-              <select class="sort-select" aria-label="Ordenar productos por">
-                <option>Relevancia</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Más vendidos</option>
-                <option>Novedades</option>
+              <p class="products-count">Mostrando <strong id="productos-count">6</strong> perfumes</p>
+              <select class="sort-select" id="sort-select" aria-label="Ordenar productos por">
+                <option value="">Relevancia</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
               </select>
             </div>
             <div class="product-grid" id="product-grid-catalogo"></div>
@@ -171,43 +168,66 @@
       </div>
     </div><!-- /page-catalogo -->
 
-    <!-- ── PÁGINA: GUÍA OLFATIVA ─────────────────── -->
+    <!-- ── PÁGINA: GUÍA OLFATIVA ─────────────── -->
     <div class="page" id="page-guia" role="main">
-      <div class="container" style="padding-top: 2rem; padding-bottom: 2rem;">
-        <div class="wireframe-note">⬜ PROTOTIPO DE BAJA FIDELIDAD — Guía Olfativa</div>
+      <div class="container" style="padding-top:2rem; padding-bottom:2rem;">
         <h1 class="section-title">Guía Olfativa</h1>
-        <p class="section-sub">Aprende las familias de fragancias. Sin tecnicismos.</p>
+        <p class="section-sub">Aprende las familias de fragancias. Sin tecnicismos. Haz clic para filtrar el catálogo.</p>
 
         <div class="guide-grid" role="list">
-          <article class="guide-card" role="listitem" tabindex="0" aria-label="Familia floral" onclick="showToast('Filtrando por familia: Floral')">
+          <article class="guide-card" role="listitem" tabindex="0"
+            aria-label="Familia floral"
+            onclick="filtrarPorFamilia('Floral')"
+            onkeydown="if(event.key==='Enter') filtrarPorFamilia('Floral')">
             <div class="guide-icon" aria-hidden="true">🌸</div>
             <h3 class="guide-name">Floral</h3>
             <p class="guide-desc">Rosa, jazmín, gardenia. Suaves y femeninos. Ideales para el día a día.</p>
+            <span class="guide-link">Ver perfumes →</span>
           </article>
-          <article class="guide-card" role="listitem" tabindex="0" aria-label="Familia amaderada" onclick="showToast('Filtrando por familia: Amaderado')">
+          <article class="guide-card" role="listitem" tabindex="0"
+            aria-label="Familia amaderada"
+            onclick="filtrarPorFamilia('Amaderado')"
+            onkeydown="if(event.key==='Enter') filtrarPorFamilia('Amaderado')">
             <div class="guide-icon" aria-hidden="true">🌲</div>
             <h3 class="guide-name">Amaderado</h3>
             <p class="guide-desc">Cedro, sándalo, vetiver. Cálidos y sofisticados. Para noches y reuniones.</p>
+            <span class="guide-link">Ver perfumes →</span>
           </article>
-          <article class="guide-card" role="listitem" tabindex="0" aria-label="Familia cítrica" onclick="showToast('Filtrando por familia: Cítrico')">
+          <article class="guide-card" role="listitem" tabindex="0"
+            aria-label="Familia cítrica"
+            onclick="filtrarPorFamilia('Cítrico')"
+            onkeydown="if(event.key==='Enter') filtrarPorFamilia('Cítrico')">
             <div class="guide-icon" aria-hidden="true">🍋</div>
             <h3 class="guide-name">Cítrico</h3>
             <p class="guide-desc">Limón, bergamota, naranja. Frescos y energizantes. Perfectos para el verano.</p>
+            <span class="guide-link">Ver perfumes →</span>
           </article>
-          <article class="guide-card" role="listitem" tabindex="0" aria-label="Familia oriental" onclick="showToast('Filtrando por familia: Oriental')">
+          <article class="guide-card" role="listitem" tabindex="0"
+            aria-label="Familia oriental"
+            onclick="filtrarPorFamilia('Oriental')"
+            onkeydown="if(event.key==='Enter') filtrarPorFamilia('Oriental')">
             <div class="guide-icon" aria-hidden="true">🌙</div>
             <h3 class="guide-name">Oriental</h3>
             <p class="guide-desc">Vainilla, ámbar, resinas. Sensuales y cálidos. Para la noche y salidas especiales.</p>
+            <span class="guide-link">Ver perfumes →</span>
           </article>
-          <article class="guide-card" role="listitem" tabindex="0" aria-label="Familia acuática" onclick="showToast('Filtrando por familia: Acuático')">
+          <article class="guide-card" role="listitem" tabindex="0"
+            aria-label="Familia acuática"
+            onclick="filtrarPorFamilia('Acuático')"
+            onkeydown="if(event.key==='Enter') filtrarPorFamilia('Acuático')">
             <div class="guide-icon" aria-hidden="true">🌊</div>
             <h3 class="guide-name">Acuático</h3>
             <p class="guide-desc">Mar, brisa, ozono. Limpios y modernos. Para cualquier hora del día.</p>
+            <span class="guide-link">Ver perfumes →</span>
           </article>
-          <article class="guide-card" role="listitem" tabindex="0" aria-label="Familia especiada" onclick="showToast('Filtrando por familia: Especiado')">
+          <article class="guide-card" role="listitem" tabindex="0"
+            aria-label="Familia especiada"
+            onclick="showToast('Próximamente: familia Especiado')"
+            onkeydown="if(event.key==='Enter') showToast('Próximamente: familia Especiado')">
             <div class="guide-icon" aria-hidden="true">🌶️</div>
             <h3 class="guide-name">Especiado</h3>
             <p class="guide-desc">Pimienta, cardamomo, clavo. Intensos y únicos. Para quien quiere destacar.</p>
+            <span class="guide-link">Próximamente</span>
           </article>
         </div>
 
@@ -216,17 +236,17 @@
           <p class="info-box-text">
             <strong>Eau de Parfum (EdP):</strong> Concentración 15-20%. Dura entre 6-8 horas. Ideal si quieres que el aroma se mantenga todo el día.<br><br>
             <strong>Eau de Toilette (EdT):</strong> Concentración 5-15%. Dura entre 3-5 horas. Más ligero, perfecto para uso diario y climas cálidos.<br><br>
-            <strong>Parfum:</strong> Concentración mayor al 20%. Puede durar todo el día con una sola aplicación.
+            <strong>Eau de Cologne (EdC):</strong> Concentración 2-5%. Fresco y sutil. Ideal para el día a día.
           </p>
-          <button class="btn-primary" onclick="showPage('catalogo')">Explorar catálogo con este conocimiento</button>
+          <button class="btn-primary" onclick="showPage('catalogo')">Explorar catálogo →</button>
         </div>
+
       </div>
     </div><!-- /page-guia -->
 
-    <!-- ── PÁGINA: MI PERFIL ─────────────────────── -->
+    <!-- ── PÁGINA: MI PERFIL ─────────────────── -->
     <div class="page" id="page-perfil" role="main">
-      <div class="container" style="padding-top: 2rem; padding-bottom: 2rem; max-width: 700px;">
-        <div class="wireframe-note">⬜ PROTOTIPO DE BAJA FIDELIDAD — Perfil de usuario</div>
+      <div class="container" style="padding-top:2rem; padding-bottom:2rem; max-width:700px;">
         <h1 class="section-title">Mi Perfil</h1>
 
         <div class="profile-card" aria-label="Perfil de Valentina Torres">
@@ -266,21 +286,21 @@
             </div>
           </div>
 
-          <h2 class="profile-section-title" style="margin-top: 1.5rem;">Mis preferencias</h2>
-          <div style="display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <h2 class="profile-section-title" style="margin-top:1.5rem;">Mis preferencias</h2>
+          <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.5rem;">
             <span class="chip active" style="pointer-events:none">Floral</span>
             <span class="chip active" style="pointer-events:none">6+ horas</span>
             <span class="chip active" style="pointer-events:none">EdP</span>
             <span class="chip active" style="pointer-events:none">Moderado</span>
           </div>
-          <button class="btn-primary" onclick="showPage('catalogo')">Ver recomendaciones para mí</button>
+          <button class="btn-primary" onclick="filtrarPorFamilia('Floral')">Ver recomendaciones para mí →</button>
         </div>
       </div>
     </div><!-- /page-perfil -->
 
   </main><!-- /main-content -->
 
-  <!-- ── BARRA COMPARADOR ──────────────────────────── -->
+  <!-- ── BARRA COMPARADOR ──────────────────────── -->
   <div class="comparador-bar" id="comparador-bar" role="complementary" aria-label="Comparador de perfumes">
     <div>
       <p class="comparador-label">COMPARAR PERFUMES</p>
@@ -294,7 +314,7 @@
     </button>
   </div>
 
-  <!-- ── MODAL: COMPARADOR ─────────────────────────── -->
+  <!-- ── MODAL: COMPARADOR ─────────────────────── -->
   <div class="modal-overlay" id="modal-comparador" role="dialog" aria-modal="true" aria-labelledby="compare-title" onclick="closeModal('modal-comparador')">
     <div class="modal" onclick="event.stopPropagation()" tabindex="-1">
       <div class="modal-header">
@@ -322,7 +342,7 @@
     </div>
   </div>
 
-  <!-- ── MODAL: DETALLE PRODUCTO ───────────────────── -->
+  <!-- ── MODAL: DETALLE PRODUCTO ───────────────── -->
   <div class="modal-overlay" id="modal-producto" role="dialog" aria-modal="true" aria-labelledby="product-detail-title" onclick="closeModal('modal-producto')">
     <div class="modal modal-md" onclick="event.stopPropagation()" tabindex="-1">
       <div class="modal-header">
@@ -333,17 +353,44 @@
     </div>
   </div>
 
-  <!-- ── FOOTER ────────────────────────────────────── -->
+  <!-- ── PÁGINA: CONTACTO ─────────────────────── -->
+  <div class="page" id="page-contacto" role="main">
+    <div class="container" style="padding-top:2rem; padding-bottom:2rem; max-width:600px;">
+
+      <h1 class="section-title">Contáctanos</h1>
+      <p class="section-sub">Déjanos tu mensaje o comunícate directamente</p>
+
+      <!-- INFO DE CONTACTO -->
+      <div class="contact-info-block">
+        <p><span class="contact-icon">👤</span> <strong>Sebastian Carrera</strong></p>
+        <p><span class="contact-icon">📞</span> 0983098535</p>
+        <p><span class="contact-icon">✉️</span> sebascarrera011804@gmail.com</p>
+      </div>
+
+      <!-- FORMULARIO -->
+      <form class="contact-form" onsubmit="event.preventDefault(); enviarContacto(this);">
+        <input type="text" placeholder="Tu nombre" required aria-label="Tu nombre">
+        <input type="email" placeholder="Tu correo" required aria-label="Tu correo">
+        <textarea placeholder="Escribe tu mensaje..." rows="5" required aria-label="Tu mensaje"></textarea>
+        <button class="btn-primary" type="submit">Enviar mensaje</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ── FOOTER ─────────────────────────────────── -->
   <footer role="contentinfo">
     <p class="footer-brand">ESSENZA</p>
     <p class="footer-tagline">La fragancia que te representa, encontrada con intención.</p>
+
     <nav class="footer-links" aria-label="Links del pie de página">
-      <a href="#">Sobre nosotros</a>
-      <a href="#">Política de cambios</a>
-      <a href="#">Accesibilidad</a>
-      <a href="#">Contacto</a>
+      <a href="#" onclick="showPage('home'); return false;">Inicio</a>
+      <a href="#" onclick="showPage('catalogo'); return false;">Catálogo</a>
+      <a href="#" onclick="showPage('guia'); return false;">Guía Olfativa</a>
+      <a href="#" onclick="showPage('contacto'); return false;">Contacto</a>
     </nav>
-    <p class="footer-copy">© 2025 Essenza Perfumería · Prototipo de baja fidelidad · IHC</p>
+
+    <p class="footer-copy">© 2025 Essenza Perfumería · Sebastián Carrera</p>
   </footer>
 
   <script src="script.js"></script>
