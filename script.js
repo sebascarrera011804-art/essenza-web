@@ -1,10 +1,9 @@
 // ══════════════════════════════════════════════
-//  DATOS DE PRODUCTOS
+//  1. DATOS DE LOS PERFUMES REALS
 // ══════════════════════════════════════════════
 const productos = [
   {
     id: 1,
-    emoji: '🌸',
     imagen: 'img/chanel.png',
     brand: 'Chanel',
     name: 'No. 5',
@@ -14,14 +13,12 @@ const productos = [
     intensidad: 'Moderado',
     precioNum: 185,
     precio: '$185',
-    salida: 'Ylang-ylang',
-    corazon: 'Jazmín',
-    fondo: 'Sándalo',
+    salida: 'Aldehídos, Ylang-ylang',
+    fondo: 'Sándalo, Vainilla, Vetiver',
     badge: 'Top ventas'
   },
   {
     id: 2,
-    emoji: '🌲',
     imagen: 'img/tomford.png',
     brand: 'Tom Ford',
     name: 'Oud Wood',
@@ -31,322 +28,391 @@ const productos = [
     intensidad: 'Intenso',
     precioNum: 245,
     precio: '$245',
-    salida: 'Cardamomo',
-    corazon: 'Oud',
-    fondo: 'Vetiver',
-    badge: null
+    salida: 'Cardamomo, Pimienta',
+    fondo: 'Madera de Oud, Sándalo, Vetiver',
+    badge: 'Exclusivo'
   },
   {
     id: 3,
-    emoji: '🍋',
-    imagen: 'img/acqua.png',
-    brand: 'Acqua di Parma',
-    name: 'Colonia',
+    imagen: 'img/dior.png',
+    brand: 'Dior',
+    name: 'Sauvage',
     familia: 'Cítrico',
-    tipo: 'EdC',
-    duracion: '4h',
-    intensidad: 'Ligero',
-    precioNum: 98,
-    precio: '$98',
-    salida: 'Limón',
-    corazon: 'Naranja',
-    fondo: 'Vetiver',
-    badge: 'Nuevo'
+    tipo: 'EdT',
+    duracion: '6h',
+    intensidad: 'Moderado',
+    precioNum: 120,
+    precio: '$120',
+    salida: 'Bergamota de Calabria',
+    fondo: 'Ambroxan, Cedro',
+    badge: 'Popular'
   },
   {
     id: 4,
-    emoji: '🌙',
-    imagen: 'img/ysl.png',
-    brand: 'YSL',
-    name: 'Black Opium',
-    familia: 'Oriental',
-    tipo: 'EdP',
-    duracion: '7h',
-    intensidad: 'Intenso',
-    precioNum: 120,
-    precio: '$120',
-    salida: 'Café',
-    corazon: 'Jazmín',
-    fondo: 'Vainilla',
+    imagen: 'img/acqua.png',
+    brand: 'Giorgio Armani',
+    name: 'Acqua Di Gio',
+    familia: 'Acuático',
+    tipo: 'EdT',
+    duracion: '5h',
+    intensidad: 'Ligero',
+    precioNum: 110,
+    precio: '$110',
+    salida: 'Notas Marinas, Naranja',
+    fondo: 'Pachulí, Cedro',
     badge: null
   },
   {
     id: 5,
-    emoji: '🌊',
-    imagen: 'img/dior.png',
-    brand: 'Dior',
-    name: 'Sauvage',
-    familia: 'Acuático',
-    tipo: 'EdT',
-    duracion: '6h',
-    intensidad: 'Moderado',
-    precioNum: 110,
-    precio: '$110',
-    salida: 'Bergamota',
-    corazon: 'Pimienta',
-    fondo: 'Ámbar',
-    badge: 'Top ventas'
-  },
-  {
-    id: 6,
-    emoji: '🌹',
-    imagen: 'img/jomalone.png',
-    brand: 'Jo Malone',
-    name: 'Rose & White Musk',
-    familia: 'Floral',
-    tipo: 'EdC',
-    duracion: '5h',
-    intensidad: 'Ligero',
-    precioNum: 135,
-    precio: '$135',
-    salida: 'Rosa',
-    corazon: 'Peonía',
-    fondo: 'Almizcle',
-    badge: 'Nuevo'
+    imagen: 'img/ysl.png',
+    brand: 'Guerlain',
+    name: 'Shalimar',
+    familia: 'Oriental',
+    tipo: 'EdP',
+    duracion: '9h',
+    intensidad: 'Intenso',
+    precioNum: 160,
+    precio: '$160',
+    salida: 'Cítricos, Bergamota',
+    fondo: 'Vainilla, Haba Tonka',
+    badge: 'Clásico'
   }
 ];
 
-// Lista de productos seleccionados para comparar (máximo 2)
+// Estados globales
 let compareList = [];
-
-// Carrito simple
 let carrito = [];
+let metodoPagoActual = 'tarjeta'; // Estado para alternar pasarela de pago
 
 // ══════════════════════════════════════════════
-//  NAVEGACIÓN ENTRE PÁGINAS
+//  2. ARQUITECTURA DE NAVEGACIÓN (SPA)
 // ══════════════════════════════════════════════
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(function(p) {
-    p.classList.remove('active');
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
   });
 
-  const target = document.getElementById('page-' + page);
-  if (target) {
-    target.classList.add('active');
+  const targetPage = document.getElementById('page-' + pageId);
+  if (targetPage) {
+    targetPage.classList.add('active');
+    targetPage.classList.add('fade-up');
   }
 
-  // Actualizar nav activo
-  document.querySelectorAll('.nav-links a').forEach(function(a) {
-    a.classList.remove('nav-active');
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.classList.remove('nav-active');
+    if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(`'${pageId}'`)) {
+      link.classList.add('nav-active');
+    }
   });
-  const navMap = { catalogo: 0, guia: 1, perfil: 2 };
-  if (navMap[page] !== undefined) {
-    const links = document.querySelectorAll('.nav-links a');
-    if (links[navMap[page]]) links[navMap[page]].classList.add('nav-active');
-  }
 
-  if (page === 'catalogo') {
-    renderProductos('product-grid-catalogo', productos);
-  }
-  if (page === 'home') {
-    renderProductos('product-grid-home', productos);
+  if (pageId === 'home') {
+    renderGrid('product-grid-home', productos.slice(0, 3));
+  } else if (pageId === 'catalogo') {
+    applyFilters();
+  } else if (pageId === 'carrito') {
+    renderCarritoView();
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ══════════════════════════════════════════════
-//  RENDERIZAR TARJETAS DE PRODUCTOS
+//  3. INYECCIÓN IMPECABLE DE TARJETAS
 // ══════════════════════════════════════════════
-function renderProductos(containerId, lista) {
+function renderGrid(containerId, lista) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  if (!lista || lista.length === 0) {
+  if (lista.length === 0) {
     container.innerHTML = `
-      <div style="grid-column:1/-1; text-align:center; padding:3rem; color:var(--text-2);">
-        <div style="font-size:2.5rem; margin-bottom:1rem;">🔍</div>
-        <p>No se encontraron perfumes con esos filtros.</p>
-        <button class="btn-outline" style="margin-top:1rem" onclick="resetFilters()">Limpiar filtros</button>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 4rem; color: var(--text-2);">
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-style: italic;">No se encontraron elixires disponibles con esos filtros.</p>
+        <button class="btn-primary" style="margin-top: 1rem;" onclick="resetFilters()">Limpiar Filtros</button>
       </div>`;
     return;
   }
 
-  container.innerHTML = lista.map(function(p) {
+  container.innerHTML = lista.map(p => {
     const isSelected = compareList.includes(p.id);
-
-    const badgeHTML = p.badge
-      ? `<span class="product-badge ${p.badge === 'Nuevo' ? 'new' : ''}" aria-label="Etiqueta: ${p.badge}">${p.badge}</span>`
-      : '';
-
-    // Imagen real del producto
-    const imgHTML = `<img src="${p.imagen}" alt="${p.brand} ${p.name}" loading="lazy">`;
-
+    const badgeHTML = p.badge ? `<span class="product-badge">${p.badge}</span>` : '';
+    
     return `
-      <article class="product-card"
-        tabindex="0"
-        onclick="openProducto(${p.id})"
-        onkeydown="if(event.key === 'Enter') openProducto(${p.id})"
-        aria-label="${p.brand} ${p.name}, ${p.familia}, ${p.precio}">
-
+      <article class="product-card fade-up" onclick="openProducto(${p.id})">
         ${badgeHTML}
-
         <div class="product-img">
-          ${imgHTML}
-          <button
-            class="product-compare-btn ${isSelected ? 'selected' : ''}"
-            onclick="event.stopPropagation(); toggleCompare(${p.id}, '${containerId}')"
-            aria-label="${isSelected ? 'Quitar de comparador' : 'Agregar al comparador'}: ${p.name}"
-            aria-pressed="${isSelected}">
-            ⚖️ ${isSelected ? 'En comparador' : 'Comparar'}
+          <img src="${p.imagen}" alt="${p.brand} ${p.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span style="display:none; font-size:4rem;">${p.emoji}</span>
+          <button class="product-compare-btn ${isSelected ? 'selected' : ''}" 
+                  onclick="event.stopPropagation(); toggleCompare(${p.id}, '${containerId}')">
+            ${isSelected ? '✓ Añadido' : '⚖️ Comparar'}
           </button>
         </div>
-
         <div class="product-info">
           <p class="product-brand">${p.brand}</p>
           <h3 class="product-name">${p.name}</h3>
           <p class="product-family">${p.familia} · ${p.tipo}</p>
-
           <div class="product-attrs">
             <span class="attr-tag">${p.duracion}</span>
             <span class="attr-tag">${p.intensidad}</span>
           </div>
-
           <div class="product-footer">
             <span class="product-price">${p.precio}<small>/ 50ml</small></span>
-            <button
-              class="btn-add"
-              onclick="event.stopPropagation(); addToCart(${p.id})"
-              aria-label="Agregar al carrito: ${p.brand} ${p.name}">
-              + Carrito
+            <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">
+              + Bolsa
             </button>
           </div>
         </div>
-
       </article>
     `;
   }).join('');
 }
 
 // ══════════════════════════════════════════════
-//  FILTROS — FUNCIONALES
+//  4. MOTOR DE FILTROS Y BUSCADOR REAL
 // ══════════════════════════════════════════════
-function toggleChip(el) {
-  el.classList.toggle('active');
-  el.setAttribute('aria-pressed', el.classList.contains('active'));
+function toggleChip(button) {
+  button.classList.toggle('active');
+  button.setAttribute('aria-pressed', button.classList.contains('active'));
+  applyFilters();
 }
 
 function applyFilters() {
-  // Familias seleccionadas
-  const familias = Array.from(document.querySelectorAll('#filter-familia-group .chip.active'))
-    .map(c => c.textContent.trim());
+  const query = document.getElementById('search-input')?.value.toLowerCase().trim() || '';
+  
+  const familias = Array.from(document.querySelectorAll('#filter-familia-group .chip.active')).map(c => c.textContent.trim());
+  const intensidades = Array.from(document.querySelectorAll('#filter-intensidad-group .chip.active')).map(c => c.textContent.trim());
+  const tipos = Array.from(document.querySelectorAll('#filter-tipo-group .chip.active')).map(c => c.textContent.trim());
+  
+  const priceInput = document.getElementById('price-range');
+  const maxPrice = priceInput ? parseInt(priceInput.value) : 300;
 
-  // Intensidades
-  const intensidades = Array.from(document.querySelectorAll('#filter-intensidad-group .chip.active'))
-    .map(c => c.textContent.trim());
+  let filtrados = productos.filter(p => {
+    const cumpleBusqueda = !query || 
+                           p.name.toLowerCase().includes(query) || 
+                           p.brand.toLowerCase().includes(query) || 
+                           p.familia.toLowerCase().includes(query);
+                           
+    const cumpleFamilia = familias.length === 0 || familias.includes(p.familia);
+    const cumpleIntensidad = intensidades.length === 0 || intensidades.includes(p.intensidad);
+    const cumpleTipo = tipos.length === 0 || tipos.includes(p.tipo);
+    const cumplePrecio = p.precioNum <= maxPrice;
 
-  // Tipos
-  const tipos = Array.from(document.querySelectorAll('#filter-tipo-group .chip.active'))
-    .map(c => c.textContent.trim());
-
-  // Precio máximo
-  const precioMax = parseInt(document.getElementById('price-range').value);
-
-  let filtrados = productos.filter(function(p) {
-    const pasaFamilia   = familias.length === 0    || familias.includes(p.familia);
-    const pasaIntensidad= intensidades.length === 0 || intensidades.includes(p.intensidad);
-    const pasaTipo      = tipos.length === 0        || tipos.includes(p.tipo);
-    const pasaPrecio    = p.precioNum <= precioMax;
-    return pasaFamilia && pasaIntensidad && pasaTipo && pasaPrecio;
+    return cumpleBusqueda && cumpleFamilia && cumpleIntensidad && cumpleTipo && cumplePrecio;
   });
 
-  // Ordenar
-  const sortVal = document.getElementById('sort-select') ? document.getElementById('sort-select').value : '';
-  if (sortVal === 'precio-asc')  filtrados.sort((a, b) => a.precioNum - b.precioNum);
-  if (sortVal === 'precio-desc') filtrados.sort((a, b) => b.precioNum - a.precioNum);
+  const sortSelect = document.getElementById('sort-select');
+  if (sortSelect?.value === 'precio-asc')  filtrados.sort((a,b) => a.precioNum - b.precioNum);
+  if (sortSelect?.value === 'precio-desc') filtrados.sort((a,b) => b.precioNum - a.precioNum);
 
-  // Actualizar contador
   const countEl = document.getElementById('productos-count');
   if (countEl) countEl.textContent = filtrados.length;
 
-  renderProductos('product-grid-catalogo', filtrados);
-  showToast(`✓ ${filtrados.length} perfume${filtrados.length !== 1 ? 's' : ''} encontrado${filtrados.length !== 1 ? 's' : ''}`);
+  renderGrid('product-grid-catalogo', filtrados);
 }
 
 function resetFilters() {
-  document.querySelectorAll('.chip').forEach(function(chip) {
-    chip.classList.remove('active');
-    chip.setAttribute('aria-pressed', 'false');
+  const input = document.getElementById('search-input');
+  if (input) input.value = '';
+  
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.remove('active');
+    c.setAttribute('aria-pressed', 'false');
   });
+
   const range = document.getElementById('price-range');
   if (range) {
     range.value = 300;
-    const valEl = document.getElementById('price-val');
-    if (valEl) valEl.textContent = '$300';
+    document.getElementById('price-val').textContent = '$300';
   }
-  const countEl = document.getElementById('productos-count');
-  if (countEl) countEl.textContent = productos.length;
-  renderProductos('product-grid-catalogo', productos);
-  showToast('Filtros limpiados');
+  applyFilters();
+}
+
+function filtrarPorFamilia(familia) {
+  showPage('catalogo');
+  setTimeout(() => {
+    document.querySelectorAll('#filter-familia-group .chip').forEach(c => {
+      const coincide = c.textContent.trim() === familia;
+      c.classList.toggle('active', coincide);
+      c.setAttribute('aria-pressed', coincide);
+    });
+    applyFilters();
+  }, 50);
 }
 
 // ══════════════════════════════════════════════
-//  BUSCADOR EN CATÁLOGO
+//  5. BOLSA DE COMPRA Y OPCIONES DE PAGO MULTI-MÉTODO
 // ══════════════════════════════════════════════
-function buscarProductos(query) {
-  const q = query.toLowerCase().trim();
-  if (!q) {
-    renderProductos('product-grid-catalogo', productos);
-    const countEl = document.getElementById('productos-count');
-    if (countEl) countEl.textContent = productos.length;
+function addToCart(id) {
+  const p = productos.find(x => x.id === id);
+  if (p) {
+    carrito.push(p);
+    updateCartBadge();
+    showToast(`✓ ${p.brand} ${p.name} añadido a la bolsa.`);
+  }
+}
+
+function updateCartBadge() {
+  document.querySelectorAll('.cart-badge').forEach(b => b.textContent = carrito.length);
+}
+
+function switchMetodoPago(metodo) {
+  metodoPagoActual = metodo;
+  renderCarritoView();
+}
+
+function renderCarritoView() {
+  const container = document.getElementById('cart-content');
+  if (!container) return;
+
+  if (carrito.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 4rem 0; color: var(--text-2);">
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 1rem;">👜</span>
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-style: italic;">Su bolsa está vacía actualmente.</p>
+        <button class="btn-primary" style="margin-top: 1.5rem;" onclick="showPage('catalogo')">Explorar Alta Perfumería</button>
+      </div>`;
     return;
   }
-  const filtrados = productos.filter(p =>
-    p.name.toLowerCase().includes(q) ||
-    p.brand.toLowerCase().includes(q) ||
-    p.familia.toLowerCase().includes(q) ||
-    p.salida.toLowerCase().includes(q) ||
-    p.fondo.toLowerCase().includes(q)
-  );
-  const countEl = document.getElementById('productos-count');
-  if (countEl) countEl.textContent = filtrados.length;
-  renderProductos('product-grid-catalogo', filtrados);
+
+  const subtotal = carrito.reduce((s, i) => s + i.precioNum, 0);
+
+  // Inyección del selector elegante de métodos de pago
+  let pasarelaFormHTML = '';
+  
+  if (metodoPagoActual === 'tarjeta') {
+    pasarelaFormHTML = `
+      <form onsubmit="event.preventDefault(); procesarCheckout('tarjeta');" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="text" placeholder="Número de Tarjeta (16 dígitos)" required maxlength="19" style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; font-size: .88rem; outline: none; width:100%;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <input type="text" placeholder="MM/AA" required maxlength="5" style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; font-size: .88rem; outline: none;">
+          <input type="password" placeholder="CVC" required maxlength="4" style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; font-size: .88rem; outline: none;">
+        </div>
+        <input type="text" placeholder="Nombre del Titular" required style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; font-size: .88rem; outline: none; width:100%;">
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: .5rem; padding: .9rem;">Autorizar Compra de $${subtotal}</button>
+      </form>
+    `;
+  } else {
+    // Interfaz Pro de Transferencia Bancaria Directa
+    pasarelaFormHTML = `
+      <div style="background: rgba(15,14,12,0.6); padding: 1.25rem; border: 1px dashed var(--border); margin-bottom: 1.5rem; font-size: .9rem; line-height: 1.6;">
+        <p style="color: var(--gold); margin-bottom: .5rem; text-transform: uppercase; font-size: .75rem; letter-spacing: .05em;">Datos de Cuenta Atelier Essenza:</p>
+        <p style="color: var(--text);"><strong style="color:var(--text-2);">Banco:</strong> Banco Pichincha (Cuenta de Ahorros)</p>
+        <p style="color: var(--text);"><strong style="color:var(--text-2);">Número de Cuenta:</strong> 2204598104</p>
+        <p style="color: var(--text);"><strong style="color:var(--text-2);">Titular:</strong> Sebastian Carrera</p>
+        <p style="color: var(--text);"><strong style="color:var(--text-2);">Identificación / CI:</strong> 1726943850</p>
+        <p style="color: var(--text);"><strong style="color:var(--text-2);">Correo:</strong> sebascarrera011804@gmail.com</p>
+      </div>
+      <form onsubmit="event.preventDefault(); procesarCheckout('transferencia');" style="display: flex; flex-direction: column; gap: 1rem;">
+        <p style="font-size: .8rem; color: var(--text-2); margin-bottom: .25rem;">Por favor, ingrese el código o número de comprobante de la transferencia efectuada:</p>
+        <input type="text" placeholder="Número de Referencia / Comprobante" required style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; font-size: .88rem; outline: none; width:100%;">
+        <input type="text" placeholder="Nombre de la institución desde donde transfiere" required style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: .75rem 1rem; font-size: .88rem; outline: none; width:100%;">
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: .5rem; padding: .9rem;">Notificar Transferencia de $${subtotal}</button>
+      </form>
+    `;
+  }
+
+  container.innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
+      ${carrito.map((item, index) => `
+        <div class="fade-up" style="background: var(--surface); border: 1px solid var(--border); padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div style="background: var(--surface2); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; padding: 5px;">
+              <img src="${item.imagen}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            </div>
+            <div>
+              <p style="font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold);">${item.brand}</p>
+              <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: var(--cream);">${item.name}</h3>
+              <p style="font-size: .75rem; color: var(--muted);">${item.familia} · ${item.tipo}</p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <span style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); font-weight: 500;">$${item.precioNum}</span>
+            <button onclick="removeFromCart(${index})" style="background: none; border: 1px solid var(--border); color: var(--text-2); padding: .25rem .5rem; cursor: pointer; font-size: .75rem;">✕</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; font-size: .9rem; color: var(--text-2);">
+        <span>Subtotal</span>
+        <span>$${subtotal}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); font-size: .9rem; color: var(--text-2);">
+        <span>Envío Asegurado Atelier</span>
+        <span style="color: var(--success); font-size: .8rem; text-transform: uppercase;">Gratis</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300;">Monto Total:</h3>
+        <span style="font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); font-weight: 600;">$${subtotal}</span>
+      </div>
+    </div>
+
+    <div class="fade-up" style="background: linear-gradient(135deg, var(--surface) 0%, #171511 100%); border: 1px solid var(--gold); padding: 2rem; border-radius: var(--radius);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); font-weight: 400; letter-spacing: .02em;">⚙️ Pasarela de Pago Segura</h3>
+        <div style="display: flex; gap: .5rem;">
+          <button class="chip ${metodoPagoActual === 'tarjeta' ? 'active' : ''}" onclick="switchMetodoPago('tarjeta')">💳 Tarjeta</button>
+          <button class="chip ${metodoPagoActual === 'transferencia' ? 'active' : ''}" onclick="switchMetodoPago('transferencia')">🏦 Transferencia</button>
+        </div>
+      </div>
+      
+      ${pasarelaFormHTML}
+    </div>
+  `;
+}
+
+function removeFromCart(index) {
+  carrito.splice(index, 1);
+  updateCartBadge();
+  renderCarritoView();
+}
+
+function procesarCheckout(tipo) {
+  if (tipo === 'tarjeta') {
+    showToast("🔐 Autorizando cobro con la entidad bancaria...");
+  } else {
+    showToast("🏦 Verificando comprobante de transferencia bancaria...");
+  }
+  
+  setTimeout(() => {
+    showToast("✅ Transacción exitosa. Su orden ha sido registrada en el Atelier.");
+    carrito = [];
+    updateCartBadge();
+    showPage('home');
+  }, 2000);
 }
 
 // ══════════════════════════════════════════════
-//  COMPARADOR
+//  6. COMPARADOR DE PERFUMES
 // ══════════════════════════════════════════════
 function toggleCompare(id, containerId) {
   const index = compareList.indexOf(id);
-
   if (index > -1) {
     compareList.splice(index, 1);
   } else {
     if (compareList.length >= 2) {
-      showToast('Máximo 2 perfumes para comparar. Quita uno primero.');
+      showToast('Solo se permite la comparación simultánea de 2 elixires.');
       return;
     }
     compareList.push(id);
   }
-
   updateComparadorBar();
-  // Re-render el grid correcto
-  if (containerId === 'product-grid-catalogo') {
-    const countEl = document.getElementById('productos-count');
-    const currentCount = countEl ? parseInt(countEl.textContent) : productos.length;
-    renderProductos(containerId, productos); // simple re-render con todos
-  } else {
-    renderProductos(containerId, productos);
-  }
+  if (containerId === 'product-grid-catalogo') applyFilters();
+  else renderGrid(containerId, productos.slice(0, 3));
 }
 
 function updateComparadorBar() {
   const bar = document.getElementById('comparador-bar');
   if (!bar) return;
-
-  if (compareList.length > 0) {
-    bar.classList.add('visible');
-  } else {
-    bar.classList.remove('visible');
-  }
+  compareList.length > 0 ? bar.classList.add('visible') : bar.classList.remove('visible');
 
   for (let i = 0; i < 2; i++) {
     const slot = document.getElementById('slot-' + i);
     if (!slot) continue;
-    const producto = compareList[i] ? productos.find(function(x) { return x.id === compareList[i]; }) : null;
-
-    if (producto) {
-      slot.textContent = producto.emoji + ' ' + producto.name;
+    if (compareList[i]) {
+      const p = productos.find(x => x.id === compareList[i]);
+      slot.textContent = `${p.emoji} ${p.brand} ${p.name}`;
       slot.classList.add('filled');
     } else {
       slot.textContent = 'Selecciona un perfume';
@@ -356,169 +422,74 @@ function updateComparadorBar() {
 }
 
 function openComparador() {
-  if (compareList.length < 2) {
-    showToast('Selecciona 2 perfumes para comparar');
-    return;
-  }
+  if (compareList.length < 2) return;
+  const a = productos.find(x => x.id === compareList[0]);
+  const b = productos.find(x => x.id === compareList[1]);
 
-  const a = productos.find(function(p) { return p.id === compareList[0]; });
-  const b = productos.find(function(p) { return p.id === compareList[1]; });
+  document.getElementById('compare-name-0').textContent = `${a.brand} ${a.name}`;
+  document.getElementById('compare-name-1').textContent = `${b.brand} ${b.name}`;
 
-  // Llenar encabezados
-  document.getElementById('compare-name-0').textContent = a.emoji + ' ' + a.brand + ' ' + a.name;
-  document.getElementById('compare-name-1').textContent = b.emoji + ' ' + b.brand + ' ' + b.name;
-
-  // Llenar datos de la tabla
   const campos = ['familia', 'tipo', 'duracion', 'intensidad', 'salida', 'fondo', 'precio'];
-  campos.forEach(function(campo) {
-    const el0 = document.getElementById('cf-0-' + campo);
-    const el1 = document.getElementById('cf-1-' + campo);
-    if (el0) el0.textContent = a[campo];
-    if (el1) el1.textContent = b[campo];
-  });
-
-  // Destacar diferencias
-  campos.forEach(function(campo) {
-    const el0 = document.getElementById('cf-0-' + campo);
-    const el1 = document.getElementById('cf-1-' + campo);
-    if (el0 && el1) {
-      el0.style.color = '';
-      el1.style.color = '';
-      if (a[campo] !== b[campo]) {
-        el0.style.color = 'var(--gold)';
-        el1.style.color = 'var(--gold)';
-      }
-    }
+  campos.forEach(c => {
+    document.getElementById(`cf-0-${c}`).textContent = a[c];
+    document.getElementById(`cf-1-${c}`).textContent = b[c];
   });
 
   document.getElementById('modal-comparador').classList.add('open');
 }
 
 // ══════════════════════════════════════════════
-//  MODAL: DETALLE DE PRODUCTO
+//  7. DETALLE EXPANDIDO DE FRAGANCIAS
 // ══════════════════════════════════════════════
 function openProducto(id) {
-  const p = productos.find(function(x) { return x.id === id; });
+  const p = productos.find(x => x.id === id);
   if (!p) return;
 
-  let intensidadPct = 65;
-  if (p.intensidad === 'Ligero')  intensidadPct = 35;
-  if (p.intensidad === 'Moderado') intensidadPct = 65;
-  if (p.intensidad === 'Intenso') intensidadPct = 92;
-
-  let duracionPct = 60;
-  if (p.duracion === '4h')  duracionPct = 40;
-  if (p.duracion === '5h')  duracionPct = 50;
-  if (p.duracion === '6h')  duracionPct = 60;
-  if (p.duracion === '7h')  duracionPct = 70;
-  if (p.duracion === '8h+') duracionPct = 85;
-  if (p.duracion === '10h+') duracionPct = 100;
-
-  document.getElementById('product-detail-title').textContent = p.brand + ' — ' + p.name;
-
+  document.getElementById('product-detail-title').textContent = `${p.brand} — ${p.name}`;
   document.getElementById('product-detail-content').innerHTML = `
-    <div class="product-detail-img" aria-label="Imagen de ${p.brand} ${p.name}">
-      <img src="${p.imagen}" alt="${p.brand} ${p.name}" style="max-width:100%; max-height:260px; object-fit:contain;">
-    </div>
-    <div class="product-detail-info">
-      <p class="product-detail-brand">${p.brand}</p>
-      <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:300; margin-bottom:.3rem;">${p.name}</h3>
-      <p style="color:var(--text-2); font-size:.85rem; margin-bottom:1.2rem;">${p.familia} · ${p.tipo}</p>
-
-      <div class="notes-section">
-        <p class="notes-title">Nota de salida</p>
-        <div class="notes-pills">
-          <span class="note-pill">${p.salida}</span>
-        </div>
+    <div class="product-detail">
+      <div class="product-detail-img">
+        <img src="${p.imagen}" alt="${p.name}" onerror="this.style.display='none';">
       </div>
-
-      <div class="notes-section">
-        <p class="notes-title">Nota de corazón</p>
-        <div class="notes-pills">
-          <span class="note-pill">${p.corazon}</span>
+      <div>
+        <p class="product-detail-brand">${p.brand}</p>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:300; margin-bottom:.5rem;">${p.name}</h2>
+        <p style="color:var(--text-2); font-size:.85rem; margin-bottom:1.5rem;">${p.familia} · Concentración ${p.tipo}</p>
+        
+        <div class="notes-section">
+          <p class="notes-title">Notas de Salida</p>
+          <div class="notes-pills"><span class="note-pill">${p.salida}</span></div>
         </div>
-      </div>
-
-      <div class="notes-section">
-        <p class="notes-title">Nota de fondo</p>
-        <div class="notes-pills">
-          <span class="note-pill">${p.fondo}</span>
+        <div class="notes-section" style="margin-bottom: 1.5rem;">
+          <p class="notes-title">Notas de Fondo</p>
+          <div class="notes-pills"><span class="note-pill">${p.fondo}</span></div>
         </div>
-      </div>
 
-      <div style="margin:1rem 0;">
         <div class="rating-bar">
-          <span class="rating-label">Duración</span>
-          <div class="rating-track">
-            <div class="rating-fill" style="width:${duracionPct}%;"></div>
-          </div>
-          <span style="font-size:.78rem; color:var(--gold); margin-left:.5rem;">${p.duracion}</span>
+          <span class="rating-label">Estela e Intensidad: ${p.intensidad}</span>
+          <div class="rating-track"><div class="rating-fill" style="width: ${p.intensidad === 'Intenso' ? '100%' : p.intensidad === 'Moderado' ? '65%' : '35%'}"></div></div>
         </div>
-        <div class="rating-bar">
-          <span class="rating-label">Intensidad</span>
-          <div class="rating-track">
-            <div class="rating-fill" style="width:${intensidadPct}%;"></div>
-          </div>
-          <span style="font-size:.78rem; color:var(--gold); margin-left:.5rem;">${p.intensidad}</span>
+        <div class="rating-bar" style="margin-bottom: 2rem;">
+          <span class="rating-label">Longevidad Estimada: ${p.duracion}</span>
+          <div class="rating-track"><div class="rating-fill" style="width: 85%"></div></div>
         </div>
-      </div>
 
-      <div class="price-row">
-        <span class="price-big">${p.precio}</span>
-        <button
-          class="add-to-cart-btn"
-          onclick="addToCart(${p.id}); closeModal('modal-producto')"
-          aria-label="Agregar ${p.name} al carrito de compras">
-          Agregar al carrito
-        </button>
+        <div class="price-row">
+          <span class="price-big">${p.precio}</span>
+          <button class="add-to-cart-btn" onclick="addToCart(${p.id}); closeModal('modal-producto');">Añadir a la bolsa</button>
+        </div>
       </div>
     </div>
   `;
-
   document.getElementById('modal-producto').classList.add('open');
 }
 
-// ══════════════════════════════════════════════
-//  CERRAR MODALES
-// ══════════════════════════════════════════════
 function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('open');
-}
-
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    closeModal('modal-comparador');
-    closeModal('modal-producto');
-  }
-});
-
-// ══════════════════════════════════════════════
-//  CARRITO
-// ══════════════════════════════════════════════
-function addToCart(idOrName) {
-  let nombre;
-  if (typeof idOrName === 'number') {
-    const p = productos.find(x => x.id === idOrName);
-    nombre = p ? p.brand + ' ' + p.name : idOrName;
-    if (p) carrito.push(p);
-  } else {
-    nombre = idOrName;
-  }
-  updateCartBadge();
-  showToast('✓ ' + nombre + ' agregado al carrito');
-}
-
-function updateCartBadge() {
-  const badge = document.querySelector('.cart-badge');
-  if (badge) {
-    badge.textContent = carrito.length;
-    badge.setAttribute('aria-label', carrito.length + ' productos');
-  }
+  document.getElementById(id)?.classList.remove('open');
 }
 
 // ══════════════════════════════════════════════
-//  TOAST
+//  8. TOASTS Y AUXILIARES
 // ══════════════════════════════════════════════
 let toastTimer = null;
 function showToast(msg) {
@@ -528,92 +499,39 @@ function showToast(msg) {
   msgEl.textContent = msg;
   toast.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(function() {
-    toast.classList.remove('show');
-  }, 3000);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-// ══════════════════════════════════════════════
-//  FORMULARIO DE CONTACTO
-// ══════════════════════════════════════════════
 function enviarContacto(form) {
-  const nombre  = form.querySelector('input[type="text"]').value.trim();
-  const correo  = form.querySelector('input[type="email"]').value.trim();
-  const mensaje = form.querySelector('textarea').value.trim();
-
-  if (!nombre || !correo || !mensaje) {
-    showToast('⚠️ Por favor completa todos los campos');
-    return;
-  }
-  if (!correo.includes('@') || !correo.includes('.')) {
-    showToast('⚠️ Correo no válido');
-    return;
-  }
-
   const btn = form.querySelector('button');
   btn.disabled = true;
-  btn.textContent = 'Enviando...';
-  showToast('Enviando mensaje...');
-
-  setTimeout(function() {
-    showToast('✅ Mensaje enviado correctamente');
+  btn.textContent = 'Enviando al Atelier...';
+  setTimeout(() => {
+    showToast('✅ Solicitud de asesoría enviada con éxito.');
     form.reset();
     btn.disabled = false;
     btn.textContent = 'Enviar mensaje';
-  }, 1500);
+  }, 1200);
 }
 
-// ══════════════════════════════════════════════
-//  GUÍA OLFATIVA — Filtrar por familia al hacer clic
-// ══════════════════════════════════════════════
-function filtrarPorFamilia(familia) {
+function activarPaso(index) {
+  document.querySelectorAll('.step-pill').forEach((p, i) => p.classList.toggle('active', i === index));
   showPage('catalogo');
-  // Desactivar todos los chips de familia y activar el seleccionado
-  setTimeout(function() {
-    document.querySelectorAll('#filter-familia-group .chip').forEach(function(chip) {
-      if (chip.textContent.trim() === familia) {
-        chip.classList.add('active');
-        chip.setAttribute('aria-pressed', 'true');
-      } else {
-        chip.classList.remove('active');
-        chip.setAttribute('aria-pressed', 'false');
-      }
-    });
-    applyFilters();
-  }, 100);
 }
 
 // ══════════════════════════════════════════════
-//  INICIALIZACIÓN
+//  9. INICIALIZADOR DEL DOM
 // ══════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  renderProductos('product-grid-home', productos);
-
-  // Sincronizar badge del carrito inicial
+document.addEventListener('DOMContentLoaded', () => {
+  renderGrid('product-grid-home', productos.slice(0, 3));
   updateCartBadge();
 
-  // Rango de precio: actualizar label en tiempo real
-  const rangeInput = document.getElementById('price-range');
-  if (rangeInput) {
-    rangeInput.addEventListener('input', function() {
-      const valEl = document.getElementById('price-val');
-      if (valEl) valEl.textContent = '$' + this.value;
-    });
-  }
+  document.getElementById('price-range')?.addEventListener('input', function() {
+    const val = document.getElementById('price-val');
+    if (val) val.textContent = '$' + this.value;
+    applyFilters();
+  });
 
-  // Buscador en catálogo
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      buscarProductos(this.value);
-    });
-  }
-
-  // Ordenar
-  const sortSel = document.getElementById('sort-select');
-  if (sortSel) {
-    sortSel.addEventListener('change', function() {
-      applyFilters();
-    });
-  }
+  document.getElementById('search-input')?.addEventListener('input', applyFilters);
+  document.getElementById('sort-select')?.addEventListener('change', applyFilters);
 });
